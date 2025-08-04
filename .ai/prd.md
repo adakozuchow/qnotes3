@@ -8,12 +8,7 @@ Simple note-taking application with priority management.
 2. Note management (CRUD operations)
 3. Soft delete with TTL cleanup handled by MongoDB engine
 
-## 3. Business functions
-1. Stale Notes Counter
-2. High Priority Notes Counter
-3. Note Completion Time Analysis
-
-## 3. Technical Requirements
+## 4. Technical Requirements
 1. RESTful API with basic JWT authentication
 2. Local MongoDB rised in spring context for data storage
 3. Angular for web-platform client
@@ -21,7 +16,7 @@ Simple note-taking application with priority management.
 5. CI/CD pipeline with GitHub Actions
 6. Swagger/OpenAPI 3.1 documentation
 
-## 4. Limitations and Constraints
+## 5. Limitations and Constraints
 - No push notifications, calendar integrations, or advanced permission management
 - No note versioning support
 - No encryption or WCAG compliance requirements
@@ -29,7 +24,7 @@ Simple note-taking application with priority management.
 - Timeline: MVP release within 3 weeks from project start
 - Team: 1 backend Java developer, 1 junior frontend developer
 
-## 5. Success Metrics
+## 6s. Success Metrics
 1. Dashboard counters update on note status change, deletion, or creation
 2. MVP delivered within 3-week timeline
 3. Public GitHub repository with setup documentation 

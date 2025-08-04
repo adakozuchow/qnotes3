@@ -1,8 +1,8 @@
-# Technical Specification for Qnotes2
+# Technical Specification for Qnotes3
 
 ## Programming Languages
 
-- BE (BackEnd) is written in Java 17
+- BE (BackEnd) is written in Java 21
 - FE (FrontEnd) is written in TypeScript
 
 ## Data Storage
@@ -12,7 +12,7 @@
 ### FE Solutions
 - Angular 20
 ### BE Solutions
-- Spring 3.* family including: Spring Boot, Spring Data MongoDB, Spring Security
+- Spring Boot 3, Spring 6 including support for Spring Web, Spring Data MongoDB and Spring Security
 - Junit 5 for unit testing
 - Flapdoodle solution for running local MongoDB 
 

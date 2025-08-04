@@ -1,8 +1,8 @@
-# REST API Plan - Qnotes MVP
+# REST API Plan - Qnotes3 MVP
 
 ## 1. Overview
 
-This document defines the REST API specification for Qnotes MVP - a lightweight, cross-platform application for managing prioritized notes/tasks. The API is built using Java Spring Boot with MongoDB as the database backend.
+This document defines the REST API specification for Qnotes3 MVP - a lightweight, cross-platform application for managing prioritized notes/tasks. The API is built using Java Spring Boot with MongoDB as the database backend.
 
 ## 2. Core Resources
 

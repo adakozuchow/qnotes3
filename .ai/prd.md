@@ -14,8 +14,8 @@ Simple note-taking application with priority management.
 3. Note Completion Time Analysis
 
 ## 3. Technical Requirements
-1. RESTful API with JWT authentication
-2. MongoDB for data storage
+1. RESTful API with basic JWT authentication
+2. Local MongoDB rised in spring context for data storage
 3. Angular for web-platform client
 4. Automated tests (unit, integration)
 5. CI/CD pipeline with GitHub Actions
@@ -25,6 +25,7 @@ Simple note-taking application with priority management.
 - No push notifications, calendar integrations, or advanced permission management
 - No note versioning support
 - No encryption or WCAG compliance requirements
+- Only simple JWT authentication with no support for refresh tokens
 - Timeline: MVP release within 3 weeks from project start
 - Team: 1 backend Java developer, 1 junior frontend developer
 

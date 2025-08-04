@@ -1,0 +1,13 @@
+## CODING_PRACTICES
+
+### Guidelines for STATIC_ANALYSIS
+
+#### SONARQUBE
+
+- Configure quality gates with appropriate thresholds for {{critical_metrics}}
+- Set up branch analysis to track quality metrics across different development branches
+- Implement custom quality profiles tailored to {{language_specific_requirements}}
+- Configure security hotspot reviews as part of the development workflow
+- Use SonarLint IDE integration to catch issues before they reach the repository
+- Set up pull request decoration to provide feedback during code review process
+

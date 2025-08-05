@@ -152,6 +152,14 @@ components:
       scheme: bearer
       bearerFormat: JWT
 
+tags:
+  - name: Authentication
+    description: Authentication operations
+  - name: Notes
+    description: Note management operations
+  - name: Statistics
+    description: Statistics operations
+
 paths:
   /api/auth/register:
     post:

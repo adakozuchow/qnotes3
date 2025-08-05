@@ -105,6 +105,8 @@
 								<delegatePattern>true</delegatePattern>
 								<serializableModel>true</serializableModel>
 								<basePackage>ydgrun.info.qnotes3</basePackage>
+								<useTags>true</useTags>
+								<apiNameSuffix>Api</apiNameSuffix>
 							</configOptions>
 							<typeMappings>
 								<typeMapping>date-time=java.time.OffsetDateTime</typeMapping>

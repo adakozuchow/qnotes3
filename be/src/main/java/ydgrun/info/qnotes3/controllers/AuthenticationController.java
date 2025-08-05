@@ -2,13 +2,13 @@ package ydgrun.info.qnotes3.controllers;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-import ydgrun.info.qnotes3.api.ApiApi;
+import ydgrun.info.qnotes3.api.AuthenticationApi;
 import ydgrun.info.qnotes3.model.AuthResponse;
 import ydgrun.info.qnotes3.model.LoginRequest;
 import ydgrun.info.qnotes3.model.RegisterRequest;
 
 @RestController
-public class AuthenticationController implements ApiApi {
+public class AuthenticationController implements AuthenticationApi {
 
     @Override
     public ResponseEntity<AuthResponse> login(LoginRequest loginRequest) {

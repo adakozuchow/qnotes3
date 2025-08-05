@@ -31,7 +31,7 @@
 - **Description**: Counts notes that haven't been updated in more than 2 days
 - **Implementation Notes**:
   - Compare current timestamp with last update timestamp
-  - Exclude notes with status "DONE"
+  - Exclude notes with priority "DONE"
   - MongoDB aggregation for efficient counting
 
 ### 2.2 High Priority Notes Counter
@@ -50,7 +50,7 @@
     - Time to mark as "DONE"
     - Time to deletion (soft or hard)
 - **Implementation Notes**:
-  - Calculate time difference between creation and status change
+  - Calculate time difference between creation and priority change
   - Use MongoDB aggregation pipeline
   - Handle edge cases (e.g., notes created and completed on same day)
 

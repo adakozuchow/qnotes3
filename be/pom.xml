@@ -29,7 +29,7 @@
 	<properties>
 		<java.version>21</java.version>
 		<springdoc.version>2.3.0</springdoc.version>
-		<openapi-generator.version>7.2.0</openapi-generator.version>
+		<openapi-generator.version>6.2.1</openapi-generator.version>
 		<embedded-mongo.version>4.12.2</embedded-mongo.version>
 	</properties>
 	<dependencies>
@@ -95,6 +95,8 @@
 						</goals>
 						<configuration>
 							<inputSpec>${project.basedir}/src/main/resources/api-docs.yaml</inputSpec>
+							<templateDirectory>${project.basedir}/src/main/resources/templates</templateDirectory>
+							<output>${project.build.directory}/generated-sources/openapi</output>
 							<generatorName>spring</generatorName>
 							<apiPackage>ydgrun.info.qnotes3.api</apiPackage>
 							<modelPackage>ydgrun.info.qnotes3.model</modelPackage>
@@ -102,12 +104,19 @@
 							<configOptions>
 								<interfaceOnly>true</interfaceOnly>
 								<useSpringBoot3>true</useSpringBoot3>
-								<useJakartaEe>true</useJakartaEe>
-								<useTags>true</useTags>
-								<documentationProvider>springdoc</documentationProvider>
-								<annotationLibrary>none</annotationLibrary>
-								<skipDefaultInterface>true</skipDefaultInterface>
+								<delegatePattern>true</delegatePattern>
+								<serializableModel>true</serializableModel>
+								<basePackage>ydgrun.info.qnotes3</basePackage>
 							</configOptions>
+							<typeMappings>
+								<typeMapping>date-time=java.time.OffsetDateTime</typeMapping>
+							</typeMappings>
+							<importMappings>
+								<importMapping>java.time.OffsetDateTime=java.time.OffsetDateTime</importMapping>
+							</importMappings>
+							<generateModelTests>false</generateModelTests>
+							<generateApiTests>false</generateApiTests>
+							<skipValidateSpec>false</skipValidateSpec>
 						</configuration>
 					</execution>
 				</executions>

@@ -12,13 +12,15 @@ public class AuthenticationController implements AuthenticationApi {
 
     @Override
     public ResponseEntity<AuthResponse> login(LoginRequest loginRequest) {
-        // TODO: Implement authentication logic
-        throw new UnsupportedOperationException("Not implemented yet");
+        AuthResponse response = new AuthResponse();
+        response.setToken("dummy.jwt.token-" + loginRequest.getUsername());
+        return ResponseEntity.ok(response);
     }
 
     @Override
     public ResponseEntity<AuthResponse> register(RegisterRequest registerRequest) {
-        // TODO: Implement registration logic
-        throw new UnsupportedOperationException("Not implemented yet");
+        AuthResponse response = new AuthResponse();
+        response.setToken("dummy.jwt.token-" + registerRequest.getUsername());
+        return ResponseEntity.status(201).body(response);
     }
 }

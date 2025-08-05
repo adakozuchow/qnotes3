@@ -10,7 +10,11 @@ public class StatisticsController implements StatisticsApi {
 
     @Override
     public ResponseEntity<Statistics> getStatistics() {
-        // TODO: Implement statistics calculation logic
-        throw new UnsupportedOperationException("Not implemented yet");
+        Statistics stats = new Statistics();
+        stats.setStaleNotesCount(5);
+        stats.setHighPriorityNotesCount(3);
+        stats.setAverageCompletionTimeHours(48.5f);
+        stats.setAverageDeletionTimeHours(72.0f);
+        return ResponseEntity.ok(stats);
     }
 }

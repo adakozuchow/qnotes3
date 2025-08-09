@@ -1,22 +1,46 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { NotesService } from '../../../core/services/notes.service';
 import { Note, NotePriority } from '../../../shared/models/api.models';
+
+type SortOption = 'date-asc' | 'date-desc' | 'priority';
 
 @Component({
     selector: 'app-notes-list',
     standalone: true,
-    imports: [CommonModule],
+    imports: [CommonModule, FormsModule],
     template: `
         <div class="notes-container">
             <div class="header">
                 <h2>My Notes</h2>
                 <button class="new-note-btn" (click)="createNewNote()">New Note</button>
             </div>
+
+            <div class="filters">
+                <div class="filter-group">
+                    <label for="sortBy">Sort by:</label>
+                    <select id="sortBy" [(ngModel)]="currentSort" (change)="applySorting()">
+                        <option value="date-desc">Date (Newest first)</option>
+                        <option value="date-asc">Date (Oldest first)</option>
+                        <option value="priority">Priority</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="priorityFilter">Filter by priority:</label>
+                    <select id="priorityFilter" [(ngModel)]="selectedPriority" (change)="applyFilters()">
+                        <option value="">All</option>
+                        <option *ngFor="let priority of priorities" [value]="priority">
+                            {{priority}}
+                        </option>
+                    </select>
+                </div>
+            </div>
             
             <div class="notes-grid">
-                <div *ngFor="let note of notes" class="note-card">
+                <div *ngFor="let note of filteredNotes" class="note-card">
                     <h3>{{note.title}}</h3>
                     <p class="content">{{note.content}}</p>
                     <div class="note-footer">
@@ -32,6 +56,10 @@ import { Note, NotePriority } from '../../../shared/models/api.models';
                         Created: {{formatDate(note.createdAt)}}
                     </div>
                 </div>
+            </div>
+
+            <div *ngIf="filteredNotes.length === 0" class="no-notes">
+                No notes found matching the selected filters.
             </div>
             
             <div class="pagination" *ngIf="totalPages > 1">
@@ -57,7 +85,33 @@ import { Note, NotePriority } from '../../../shared/models/api.models';
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 1rem;
+        }
+        .filters {
+            display: flex;
+            gap: 1rem;
             margin-bottom: 2rem;
+            padding: 1rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .filter-group label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .filter-group select {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
+            color: #333;
+            font-size: 0.9rem;
         }
         .new-note-btn {
             padding: 0.5rem 1rem;
@@ -168,12 +222,24 @@ import { Note, NotePriority } from '../../../shared/models/api.models';
             border-top: 1px solid #eee;
             padding-top: 0.5rem;
         }
+        .no-notes {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+            background-color: white;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
     `]
 })
 export class NotesListComponent implements OnInit {
     notes: Note[] = [];
+    filteredNotes: Note[] = [];
     currentPage = 0;
     totalPages = 0;
+    currentSort: SortOption = 'date-desc';
+    selectedPriority: string = '';
+    priorities = Object.values(NotePriority);
 
     constructor(
         private notesService: NotesService,
@@ -190,6 +256,7 @@ export class NotesListComponent implements OnInit {
                 this.notes = response.notes;
                 this.currentPage = response.currentPage;
                 this.totalPages = response.totalPages;
+                this.applyFiltersAndSort();
             },
             error: (error) => console.error('Failed to load notes:', error)
         });
@@ -219,6 +286,42 @@ export class NotesListComponent implements OnInit {
             day: 'numeric',
             hour: '2-digit',
             minute: '2-digit'
+        });
+    }
+
+    applySorting(): void {
+        this.applyFiltersAndSort();
+    }
+
+    applyFilters(): void {
+        this.applyFiltersAndSort();
+    }
+
+    private applyFiltersAndSort(): void {
+        // First apply filters
+        this.filteredNotes = this.notes.filter(note => {
+            if (!this.selectedPriority) return true;
+            return note.priority === this.selectedPriority;
+        });
+
+        // Then apply sorting
+        this.filteredNotes.sort((a, b) => {
+            switch (this.currentSort) {
+                case 'date-asc':
+                    return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+                case 'date-desc':
+                    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+                case 'priority':
+                    const priorityOrder = {
+                        [NotePriority.NOW]: 0,
+                        [NotePriority.LATER]: 1,
+                        [NotePriority.SOMEDAY]: 2,
+                        [NotePriority.DONE]: 3
+                    };
+                    return priorityOrder[a.priority] - priorityOrder[b.priority];
+                default:
+                    return 0;
+            }
         });
     }
 }

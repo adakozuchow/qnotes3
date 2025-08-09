@@ -98,9 +98,6 @@ mvn test
 
 Key test classes:
 - `NoteServiceTest`: Tests for note management functionality
-- `JwtServiceTest`: Tests for JWT token handling
-- `UserServiceTest`: Tests for user authentication
-- Integration tests for authentication and security
 
 ### Frontend Tests
 

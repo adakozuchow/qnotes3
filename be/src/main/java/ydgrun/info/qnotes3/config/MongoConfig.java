@@ -2,14 +2,17 @@ package ydgrun.info.qnotes3.config;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
+import de.flapdoodle.embed.mongo.spring.autoconfigure.EmbeddedMongoAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 @Configuration
 @EnableMongoRepositories(basePackages = "ydgrun.info.qnotes3.repository")
+@Import(EmbeddedMongoAutoConfiguration.class)
 public class MongoConfig extends AbstractMongoClientConfiguration {
 
     @Override
@@ -24,7 +27,7 @@ public class MongoConfig extends AbstractMongoClientConfiguration {
     }
 
     @Bean
-    public MongoTemplate mongoTemplate() {
-        return new MongoTemplate(mongoClient(), getDatabaseName());
+    public MongoTemplate mongoTemplate(MongoClient mongoClient) {
+        return new MongoTemplate(mongoClient, getDatabaseName());
     }
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { NotesService } from '../../../core/services/notes.service';
 import { Note, NotePriority } from '../../../shared/models/api.models';
 
@@ -27,6 +27,9 @@ import { Note, NotePriority } from '../../../shared/models/api.models';
                             <button class="edit-btn" (click)="editNote(note)">Edit</button>
                             <button class="delete-btn" (click)="deleteNote(note.id)">Delete</button>
                         </div>
+                    </div>
+                    <div class="note-date">
+                        Created: {{formatDate(note.createdAt)}}
                     </div>
                 </div>
             </div>
@@ -75,6 +78,7 @@ import { Note, NotePriority } from '../../../shared/models/api.models';
             padding: 1rem;
             background-color: white;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: relative;
         }
         .note-card h3 {
             margin: 0 0 1rem 0;
@@ -85,11 +89,15 @@ import { Note, NotePriority } from '../../../shared/models/api.models';
             margin-bottom: 1rem;
             max-height: 100px;
             overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
         }
         .note-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 0.5rem;
         }
         .priority {
             padding: 0.25rem 0.5rem;
@@ -152,6 +160,14 @@ import { Note, NotePriority } from '../../../shared/models/api.models';
             color: #ccc;
             cursor: not-allowed;
         }
+        .note-date {
+            font-size: 0.75rem;
+            color: #999;
+            text-align: right;
+            margin-top: 0.5rem;
+            border-top: 1px solid #eee;
+            padding-top: 0.5rem;
+        }
     `]
 })
 export class NotesListComponent implements OnInit {
@@ -194,5 +210,15 @@ export class NotesListComponent implements OnInit {
                 error: (error) => console.error('Failed to delete note:', error)
             });
         }
+    }
+
+    formatDate(date: string): string {
+        return new Date(date).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
     }
 }

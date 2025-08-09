@@ -1,33 +1,39 @@
 package ydgrun.info.qnotes3.config;
 
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
-import de.flapdoodle.embed.mongo.spring.autoconfigure.EmbeddedMongoAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
-import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.util.Arrays;
+import java.util.Date;
 
 @Configuration
 @EnableMongoRepositories(basePackages = "ydgrun.info.qnotes3.repository")
-@Import(EmbeddedMongoAutoConfiguration.class)
-public class MongoConfig extends AbstractMongoClientConfiguration {
-
-    @Override
-    protected String getDatabaseName() {
-        return "qnotes3";
-    }
-
-    @Override
-    @Bean
-    public MongoClient mongoClient() {
-        return MongoClients.create("mongodb://localhost:27017");
-    }
+public class MongoConfig {
 
     @Bean
-    public MongoTemplate mongoTemplate(MongoClient mongoClient) {
-        return new MongoTemplate(mongoClient, getDatabaseName());
+    public MongoCustomConversions mongoCustomConversions() {
+        return new MongoCustomConversions(Arrays.asList(
+            new OffsetDateTimeToDateConverter(),
+            new DateToOffsetDateTimeConverter()
+        ));
+    }
+
+    private static class OffsetDateTimeToDateConverter implements Converter<OffsetDateTime, Date> {
+        @Override
+        public Date convert(OffsetDateTime source) {
+            return source == null ? null : Date.from(source.toInstant());
+        }
+    }
+
+    private static class DateToOffsetDateTimeConverter implements Converter<Date, OffsetDateTime> {
+        @Override
+        public OffsetDateTime convert(Date source) {
+            return source == null ? null : source.toInstant().atOffset(ZoneOffset.UTC);
+        }
     }
 }

@@ -2,6 +2,7 @@ package ydgrun.info.qnotes3.domain;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -10,12 +11,26 @@ import java.util.UUID;
 public class Note {
     @Id
     private UUID id;
+    
+    @Field("userId")
     private String userId;
+    
+    @Field("title")
     private String title;
+    
+    @Field("content")
     private String content;
+    
+    @Field("priority")
     private Priority priority;
+    
+    @Field("createdAt")
     private OffsetDateTime createdAt;
+    
+    @Field("updatedAt")
     private OffsetDateTime updatedAt;
+    
+    @Field("deletedAt")
     private OffsetDateTime deletedAt;
 
     public enum Priority {

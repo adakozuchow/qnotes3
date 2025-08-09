@@ -9,27 +9,22 @@ import { AuthService } from './core/services/auth.service';
     imports: [CommonModule, RouterOutlet, RouterLink],
     template: `
         <div class="app-container">
-            <!-- Debug info -->
-            <div class="debug-info" style="padding: 10px; background: #f0f0f0; margin-bottom: 10px;">
-                Current route: {{router.url}}
-            </div>
-
             <header>
                 <h1>Qnotes3</h1>
-                <nav *ngIf="!authService.isAuthenticated()">
-                    <a routerLink="/auth/login">Login</a>
-                    <a routerLink="/auth/register">Register</a>
+                <nav>
+                    @if (!authService.isAuthenticated()) {
+                        <a routerLink="/auth/login">Login</a>
+                        <a routerLink="/auth/register">Register</a>
+                    } @else {
+                        <a routerLink="/notes">Notes</a>
+                        <a routerLink="/statistics">Statistics</a>
+                        <button (click)="logout()">Logout</button>
+                    }
                 </nav>
-                <button *ngIf="authService.isAuthenticated()" (click)="logout()">Logout</button>
             </header>
             
             <main>
-                <!-- Debug info -->
-                <div *ngIf="!routerOutletLoaded" style="text-align: center; padding: 20px;">
-                    Router outlet not loaded
-                </div>
-                
-                <router-outlet (activate)="onRouterOutletActivate()" (deactivate)="onRouterOutletDeactivate()"></router-outlet>
+                <router-outlet></router-outlet>
             </main>
         </div>
     `,
@@ -53,6 +48,7 @@ import { AuthService } from './core/services/auth.service';
         nav {
             display: flex;
             gap: 1rem;
+            align-items: center;
         }
         nav a {
             color: #1976d2;
@@ -80,34 +76,13 @@ import { AuthService } from './core/services/auth.service';
             max-width: 1200px;
             margin: 0 auto;
         }
-        .debug-info {
-            font-family: monospace;
-            font-size: 14px;
-        }
     `]
 })
 export class AppComponent {
-    routerOutletLoaded = false;
-
     constructor(
         public authService: AuthService,
-        public router: Router
-    ) {
-        // Debug: Log current route on changes
-        this.router.events.subscribe(event => {
-            console.log('Router Event:', event);
-        });
-    }
-
-    onRouterOutletActivate() {
-        console.log('Router outlet activated');
-        this.routerOutletLoaded = true;
-    }
-
-    onRouterOutletDeactivate() {
-        console.log('Router outlet deactivated');
-        this.routerOutletLoaded = false;
-    }
+        private router: Router
+    ) {}
 
     logout(): void {
         this.authService.logout();

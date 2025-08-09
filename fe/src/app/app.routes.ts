@@ -4,6 +4,7 @@ import { LoginComponent } from './features/auth/login/login.component';
 import { RegisterComponent } from './features/auth/register/register.component';
 import { NotesListComponent } from './features/notes/notes-list/notes-list.component';
 import { NoteFormComponent } from './features/notes/note-form/note-form.component';
+import { StatisticsComponent } from './features/statistics/statistics.component';
 
 export const routes: Routes = [
     { 
@@ -22,6 +23,11 @@ export const routes: Routes = [
             { path: 'new', component: NoteFormComponent },
             { path: 'edit/:id', component: NoteFormComponent }
         ]
+    },
+    {
+        path: 'statistics',
+        component: StatisticsComponent,
+        canActivate: [AuthGuard]
     },
     { path: '', redirectTo: '/auth/login', pathMatch: 'full' }
 ];

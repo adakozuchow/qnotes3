@@ -1,0 +1,198 @@
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { NotesService } from '../../../core/services/notes.service';
+import { Note, NotePriority } from '../../../shared/models/api.models';
+
+@Component({
+    selector: 'app-notes-list',
+    standalone: true,
+    imports: [CommonModule],
+    template: `
+        <div class="notes-container">
+            <div class="header">
+                <h2>My Notes</h2>
+                <button class="new-note-btn" (click)="createNewNote()">New Note</button>
+            </div>
+            
+            <div class="notes-grid">
+                <div *ngFor="let note of notes" class="note-card">
+                    <h3>{{note.title}}</h3>
+                    <p class="content">{{note.content}}</p>
+                    <div class="note-footer">
+                        <span class="priority" [class]="note.priority.toLowerCase()">
+                            {{note.priority}}
+                        </span>
+                        <div class="actions">
+                            <button class="edit-btn" (click)="editNote(note)">Edit</button>
+                            <button class="delete-btn" (click)="deleteNote(note.id)">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="pagination" *ngIf="totalPages > 1">
+                <button [disabled]="currentPage === 0" 
+                        (click)="loadPage(currentPage - 1)">
+                    Previous
+                </button>
+                <span>Page {{currentPage + 1}} of {{totalPages}}</span>
+                <button [disabled]="currentPage >= totalPages - 1" 
+                        (click)="loadPage(currentPage + 1)">
+                    Next
+                </button>
+            </div>
+        </div>
+    `,
+    styles: [`
+        .notes-container {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        .new-note-btn {
+            padding: 0.5rem 1rem;
+            background-color: #1976d2;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .notes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        .note-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1rem;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .note-card h3 {
+            margin: 0 0 1rem 0;
+            color: #333;
+        }
+        .content {
+            color: #666;
+            margin-bottom: 1rem;
+            max-height: 100px;
+            overflow: hidden;
+        }
+        .note-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .priority {
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        .priority.now { 
+            background-color: #ffebee; 
+            color: #d32f2f;
+        }
+        .priority.later { 
+            background-color: #fff3e0; 
+            color: #f57c00;
+        }
+        .priority.someday { 
+            background-color: #e8f5e9; 
+            color: #388e3c;
+        }
+        .priority.done { 
+            background-color: #e3f2fd; 
+            color: #1976d2;
+        }
+        .actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .actions button {
+            padding: 0.25rem 0.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+        .edit-btn {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+        .delete-btn {
+            background-color: #ffebee;
+            color: #d32f2f;
+        }
+        .pagination {
+            margin-top: 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            align-items: center;
+        }
+        .pagination button {
+            padding: 0.5rem 1rem;
+            border: 1px solid #1976d2;
+            background-color: white;
+            color: #1976d2;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .pagination button:disabled {
+            border-color: #ccc;
+            color: #ccc;
+            cursor: not-allowed;
+        }
+    `]
+})
+export class NotesListComponent implements OnInit {
+    notes: Note[] = [];
+    currentPage = 0;
+    totalPages = 0;
+
+    constructor(
+        private notesService: NotesService,
+        private router: Router
+    ) {}
+
+    ngOnInit(): void {
+        this.loadPage(0);
+    }
+
+    loadPage(page: number): void {
+        this.notesService.getNotes(page).subscribe({
+            next: (response) => {
+                this.notes = response.notes;
+                this.currentPage = response.currentPage;
+                this.totalPages = response.totalPages;
+            },
+            error: (error) => console.error('Failed to load notes:', error)
+        });
+    }
+
+    createNewNote(): void {
+        this.router.navigate(['/notes/new']);
+    }
+
+    editNote(note: Note): void {
+        this.router.navigate(['/notes/edit', note.id]);
+    }
+
+    deleteNote(id: string): void {
+        if (confirm('Are you sure you want to delete this note?')) {
+            this.notesService.deleteNote(id).subscribe({
+                next: () => this.loadPage(this.currentPage),
+                error: (error) => console.error('Failed to delete note:', error)
+            });
+        }
+    }
+}

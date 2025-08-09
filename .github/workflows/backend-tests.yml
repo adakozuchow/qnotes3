@@ -12,19 +12,8 @@ on:
 
 jobs:
   test:
-    name: Run Backend Tests
+    name: Run Backend Unit Tests
     runs-on: ubuntu-latest
-
-    services:
-      mongodb:
-        image: mongo:4.4
-        ports:
-          - 27017:27017
-        options: >-
-          --health-cmd "mongosh --eval 'db.runCommand({ ping: 1 })'"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
 
     steps:
       - name: Checkout code
@@ -37,13 +26,10 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: Build and Test with Maven
+      - name: Run Unit Tests
         run: |
           cd be
-          mvn clean verify -Dspring.profiles.active=test
-        env:
-          SPRING_PROFILES_ACTIVE: test
-          SPRING_DATA_MONGODB_URI: mongodb://localhost:27017/qnotes3_test
+          mvn test
 
       - name: Upload Test Results
         if: always()

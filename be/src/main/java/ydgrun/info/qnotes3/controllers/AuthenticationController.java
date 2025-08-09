@@ -9,15 +9,18 @@ import ydgrun.info.qnotes3.domain.User;
 import ydgrun.info.qnotes3.model.AuthResponse;
 import ydgrun.info.qnotes3.model.LoginRequest;
 import ydgrun.info.qnotes3.model.RegisterRequest;
+import ydgrun.info.qnotes3.service.JwtService;
 import ydgrun.info.qnotes3.service.UserService;
 
 @RestController
 public class AuthenticationController implements AuthenticationApi {
     private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
     private final UserService userService;
+    private final JwtService jwtService;
 
-    public AuthenticationController(UserService userService) {
+    public AuthenticationController(UserService userService, JwtService jwtService) {
         this.userService = userService;
+        this.jwtService = jwtService;
     }
 
     @Override
@@ -26,7 +29,7 @@ public class AuthenticationController implements AuthenticationApi {
         User user = userService.authenticate(loginRequest.getUsername(), loginRequest.getPassword());
         
         AuthResponse response = new AuthResponse();
-        response.setToken("dummy.jwt.token-" + user.getUsername()); // TODO: Implement proper JWT token generation
+        response.setToken(jwtService.generateToken(user.getUsername()));
         return ResponseEntity.ok(response);
     }
 
@@ -36,7 +39,7 @@ public class AuthenticationController implements AuthenticationApi {
         User user = userService.createUser(registerRequest.getUsername(), registerRequest.getPassword());
         
         AuthResponse response = new AuthResponse();
-        response.setToken("dummy.jwt.token-" + user.getUsername()); // TODO: Implement proper JWT token generation
+        response.setToken(jwtService.generateToken(user.getUsername()));
         return ResponseEntity.status(201).body(response);
     }
 }

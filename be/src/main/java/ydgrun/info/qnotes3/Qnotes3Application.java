@@ -3,7 +3,7 @@ package ydgrun.info.qnotes3;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "ydgrun.info.qnotes3")
 public class Qnotes3Application {
 
 	public static void main(String[] args) {

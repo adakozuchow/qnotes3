@@ -1,0 +1,113 @@
+```mermaid
+graph TB
+    subgraph "Frontend Components"
+        UI["User Interface"]
+        AuthService["Auth Service"]
+        AuthGuard["Auth Guard"]
+        AuthInterceptor["Auth Interceptor"]
+        LocalStorage["Local Storage"]
+    end
+
+    subgraph "Backend Components"
+        AuthController["Authentication Controller"]
+        JWTService["JWT Service"]
+        SecurityConfig["Security Config"]
+        UserService["User Service"]
+        MongoDB[(MongoDB)]
+    end
+
+    UI --> AuthService
+    AuthService --> LocalStorage
+    AuthService --> AuthController
+    AuthGuard --> AuthService
+    AuthInterceptor --> AuthService
+    
+    AuthController --> JWTService
+    AuthController --> UserService
+    UserService --> MongoDB
+    SecurityConfig --> JWTService
+
+```
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant UI as Angular UI
+    participant AS as Auth Service
+    participant AI as Auth Interceptor
+    participant API as Auth Controller
+    participant JWT as JWT Service
+    participant DB as MongoDB
+
+    %% Login Flow
+    Note over U,DB: Login Flow
+    U->>UI: Enter Credentials
+    UI->>AS: Login Request
+    AS->>API: POST /api/auth/login
+    API->>DB: Validate Credentials
+    DB-->>API: User Data
+    API->>JWT: Generate Token
+    JWT-->>API: JWT Token
+    API-->>AS: Token + User Info
+    AS->>LocalStorage: Store Token
+    AS-->>UI: Login Success
+    UI-->>U: Show Dashboard
+
+    Note over U,DB: Authenticated Request Flow
+    U->>UI: Request Protected Resource
+    UI->>AI: HTTP Request
+    AI->>AI: Add JWT Header
+    AI->>API: Request with JWT
+    API->>JWT: Validate Token
+    JWT-->>API: Token Valid
+    API->>DB: Fetch Data
+    DB-->>API: Resource Data
+    API-->>UI: Response
+    UI-->>U: Show Data
+
+```
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant UI as Angular UI
+    participant AS as Auth Service
+    participant API as Auth Controller
+    participant DB as MongoDB
+
+    %% Registration Flow
+    Note over U,DB: Registration Flow
+    U->>UI: Fill Registration Form
+    UI->>AS: Submit Registration
+    AS->>API: POST /api/auth/register
+    API->>API: Validate Input
+    API->>DB: Check Email Unique
+    DB-->>API: Email Status
+    API->>API: Hash Password
+    API->>DB: Save User
+    DB-->>API: User Created
+    API-->>AS: Registration Success
+    AS-->>UI: Show Success
+    UI-->>U: Redirect to Login
+
+```
+
+```mermaid
+stateDiagram-v2
+    [*] --> NotAuthenticated
+    NotAuthenticated --> Authenticating: Login/Register
+    Authenticating --> Authenticated: Success
+    Authenticating --> NotAuthenticated: Failure
+    Authenticated --> NotAuthenticated: Logout/Token Expired
+    
+    state Authenticated {
+        [*] --> ValidToken
+        ValidToken --> TokenExpired: After 24h
+        TokenExpired --> [*]: Force Logout
+    }
+    
+    state NotAuthenticated {
+        [*] --> LoginForm
+        LoginForm --> RegisterForm: Switch to Register
+        RegisterForm --> LoginForm: Switch to Login
+    }

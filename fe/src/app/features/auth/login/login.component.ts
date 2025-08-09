@@ -2,7 +2,9 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { MatDialog } from '@angular/material/dialog';
 import { AuthService } from '../../../core/services/auth.service';
+import { ErrorDialogComponent } from '../../../shared/components/error-dialog/error-dialog.component';
 
 @Component({
     selector: 'app-login',
@@ -115,7 +117,8 @@ export class LoginComponent {
     constructor(
         private fb: FormBuilder,
         private authService: AuthService,
-        private router: Router
+        private router: Router,
+        private dialog: MatDialog
     ) {
         this.loginForm = this.fb.group({
             username: ['', [Validators.required, Validators.email]],
@@ -130,8 +133,11 @@ export class LoginComponent {
                     localStorage.setItem('token', response.token);
                     this.router.navigate(['/notes']);
                 },
-                error: (error) => {
-                    console.error('Login failed:', error);
+                error: () => {
+                    this.dialog.open(ErrorDialogComponent, {
+                        data: { message: 'Something went wrong. Contact administrator.' },
+                        width: '400px'
+                    });
                 }
             });
         }
